@@ -1,0 +1,13 @@
+[package]
+name = "librs"
+author = "Harry Thomas @infosechoudini"
+description = "Raw system calls and networking"
+keywords = ["net", "syscall", "system", "no_std"]
+version = "0.1.0"
+edition = "2021"
+license="Apache-2.0"
+readme = "README.md"
+categories = ["network-programming", "no-std-library", "embedded-development", "operating-systems"]
+
+[lib]
+name = "librs"
