@@ -4,56 +4,49 @@ use core::arch::asm;
 
 pub mod nr;
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall0(mut n: usize) -> usize {
     asm!("syscall" ,
           inout("rax") n,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
      n
      
 }
 
-    /* 
-    unsafe {
-     asm!("out 0x64, eax", in("eax") cmd);
-          }
-     */
-
-
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall1(mut n: usize, a1: usize) -> usize {
 
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
     n
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall2(mut n: usize, a1: usize, a2: usize) -> usize {
 
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1, in("rsi") a2,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
     n
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall3(mut n: usize, a1: usize, a2: usize, a3: usize) -> usize {
 
 
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1, in("rsi") a2, in("rdx") a3,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
 
     n
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall4(mut n: usize,
                        a1: usize,
                        a2: usize,
@@ -62,12 +55,12 @@ pub unsafe fn syscall4(mut n: usize,
                        -> usize {
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1, in("rsi") a2, in("rdx") a3, in("r10") a4,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
     n
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall5(mut n: usize,
                        a1: usize,
                        a2: usize,
@@ -78,12 +71,12 @@ pub unsafe fn syscall5(mut n: usize,
 
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1, in("rsi") a2, in("rdx") a3, in("r10") a4, in("r8") a5,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
     n
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall6(mut n: usize,
                        a1: usize,
                        a2: usize,
@@ -96,7 +89,7 @@ pub unsafe fn syscall6(mut n: usize,
      asm!("syscall" ,
           inout("rax") n, in("rdi") a1, in("rsi") a2, in("rdx") a3, in("r10") a4, in("r8") a5,
           in("r9") a6,
-          out("rcx") _ , out("r11") _,
+          out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
     n
 }

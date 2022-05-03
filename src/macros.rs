@@ -1,7 +1,8 @@
 #[macro_export]
 macro_rules! syscall {
     ($nr:ident)
-        => ( ::librs::syscall0(
+        => 
+            (::librs::syscall0(
                 ::librs::nr::$nr) );
 
     ($nr:ident, $a1:expr)

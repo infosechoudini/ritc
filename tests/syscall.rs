@@ -3,7 +3,7 @@ extern crate librs;
 
 #[cfg(target_os = "linux")]
 #[test]
-fn ebadf() {
+fn static_string() {
     static MESSAGE: &'static str = "Hello, world!";
 
     unsafe {
@@ -12,7 +12,6 @@ fn ebadf() {
     }
 }
 
-// getpid() is POSIX but that doesn't guarantee it's a system call.
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
 #[test]
 fn getpid() {

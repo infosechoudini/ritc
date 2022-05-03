@@ -1,6 +1,6 @@
 [package]
 name = "librs"
-author = "Harry Thomas @infosechoudini"
+authors = ["Harry Thomas @infosechoudini"]
 description = "Raw system calls and networking"
 keywords = ["net", "syscall", "system", "no_std"]
 version = "0.1.0"
@@ -11,3 +11,12 @@ categories = ["network-programming", "no-std-library", "embedded-development", "
 
 [lib]
 name = "librs"
+
+
+[dev-dependencies]
+criterion = { version = "0.3.5", features = ["html_reports"] }
+libc = "0.2"
+
+[[bench]]
+name = "syscalls"
+harness = false
