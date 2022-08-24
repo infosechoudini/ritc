@@ -1,0 +1,6 @@
+version: "2"
+services:
+  rustalpine:
+    build: 
+      dockerfile: ./ci/Dockerfile
+      context: .

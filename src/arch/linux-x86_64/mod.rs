@@ -7,7 +7,7 @@ pub mod nr;
 #[inline]
 pub unsafe fn syscall0(mut n: usize) -> usize {
     asm!("syscall" ,
-          inout("rax") n,
+          inlateout("rax") n,
           out("rcx") _ , out("r11") _, options(nostack, pure, nomem)
      );
      n

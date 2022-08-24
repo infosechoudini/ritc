@@ -1,6 +1,10 @@
-#![deny(warnings)]
+//#![deny(warnings)]
 #![no_std]
-
+#![feature(allocator_api)]
+#![feature(decl_macro)]
+#![feature(core_panic)]
+#![feature(core_c_str)]
+#![feature(core_ffi_c)]
 
 #[cfg(test)]
 extern crate std;
@@ -8,7 +12,12 @@ extern crate std;
 pub use arch::*;
 
 pub mod macros;
-
+pub mod error;
+//pub mod io;
+pub mod sys;
+//pub mod thread;
+pub mod sys_common;
+//pub mod ffi;
 
 #[cfg(all(target_os = "freebsd",
           target_arch = "x86_64"))]

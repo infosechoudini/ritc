@@ -17,7 +17,7 @@ pub fn libc_get_pid(c: &mut Criterion){
     c.bench_function("libc get_pid", |b| {
         b.iter(|| {
             unsafe {
-                libc::getpid()
+                libc::syscall(libc::SYS_getpid)
             }
         })
     });
