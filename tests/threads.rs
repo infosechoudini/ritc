@@ -1,4 +1,4 @@
-use librs::sys_common::pthread::Pthread;
+use ritc::sys_common::pthread::Pthread;
 
 #[test]
 fn clone_thread() {

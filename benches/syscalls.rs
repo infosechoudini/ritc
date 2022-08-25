@@ -6,7 +6,7 @@ pub fn syscall_get_pid(c: &mut Criterion){
     c.bench_function("syscall get_pid", |b| {
         b.iter(|| {
             unsafe {
-                librs::syscall0(librs::nr::GETPID)
+                ritc::syscall0(ritc::nr::GETPID)
             }
         })
     });
@@ -30,7 +30,7 @@ pub fn syscall_static_string(c: &mut Criterion) {
         b.iter( || {
 
             unsafe {
-                librs::syscall!(WRITE, 4, black_box(MESSAGE.as_ptr()), MESSAGE.len());              
+                ritc::syscall!(WRITE, 4, black_box(MESSAGE.as_ptr()), MESSAGE.len());              
             }
         })
     });

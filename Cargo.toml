@@ -1,7 +1,7 @@
 [package]
-name = "librs"
+name = "ritc"
 authors = ["Harry Thomas @infosechoudini"]
-description = "Raw system calls and networking"
+description = "Rust Inline Toolchain - Raw system calls and networking"
 keywords = ["net", "syscall", "system", "no_std"]
 version = "0.1.0"
 edition = "2021"
@@ -10,7 +10,9 @@ readme = "README.md"
 categories = ["network-programming", "no-std-library", "embedded-development", "operating-systems"]
 
 [lib]
-name = "librs"
+name = "ritc"
+crate_type = ["dylib"]
+
 
 
 [dev-dependencies]
@@ -20,3 +22,6 @@ libc = "0.2"
 [[bench]]
 name = "syscalls"
 harness = false
+
+[profile.release]
+panic = "abort"

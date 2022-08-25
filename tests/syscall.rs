@@ -1,5 +1,5 @@
 #[macro_use]
-extern crate librs;
+extern crate ritc;
 
 #[cfg(target_os = "linux")]
 #[test]
@@ -16,7 +16,7 @@ fn static_string() {
 #[test]
 fn getpid() {
     unsafe {
-        assert!(0 < librs::syscall0(librs::nr::GETPID));
+        assert!(0 < ritc::syscall0(ritc::nr::GETPID));
     }
 }
 

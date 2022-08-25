@@ -1,6 +1,6 @@
 #![feature(core_ffi_c)]
 
-use librs::sys::thread::Thread;
+use ritc::sys::thread::Thread;
 use core::str;
 extern crate alloc;
 use alloc::string;
