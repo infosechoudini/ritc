@@ -1,11 +1,10 @@
 //#![deny(warnings)]
-#![no_std]
+#![allow(unused_imports)]
+#![feature(default_alloc_error_handler)]
 #![feature(allocator_api)]
 #![feature(decl_macro)]
 #![feature(core_panic)]
-#![feature(core_c_str)]
-#![feature(core_ffi_c)]
-
+#![no_main]
 #[cfg(test)]
 extern crate std;
 
@@ -74,3 +73,8 @@ pub mod arch;
 target_arch = "x86_64"))]
 #[path="arch/linux-x86_64/mod.rs"]
 pub mod arch;
+
+use std::alloc::System;
+
+#[global_allocator]
+static A: System = System;
