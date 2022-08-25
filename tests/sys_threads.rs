@@ -1,5 +1,3 @@
-#![feature(core_ffi_c)]
-
 use ritc::sys::thread::Thread;
 use core::str;
 extern crate alloc;
