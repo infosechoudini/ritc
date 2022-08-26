@@ -42,8 +42,10 @@ use core::convert::From;
 use core::prelude::rust_2024;
 use core::convert::Infallible;
 
-
-
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
 
 /// `Error` is a trait representing the basic expectations for error values,
 /// i.e., values of type `E` in [`Result<T, E>`].

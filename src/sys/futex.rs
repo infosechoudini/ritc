@@ -17,7 +17,10 @@ use core::result::Result::Ok;
 use core::marker::Sync;
 use core::sync;
 use core::prelude::rust_2024;
-
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
 
 use crate::arch::nr::GETTID;
 

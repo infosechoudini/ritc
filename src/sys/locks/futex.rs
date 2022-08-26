@@ -13,8 +13,14 @@ use core::marker::Sync;
 use core::marker::Send;
 use core::option::Option::None;
 use core::hint;
-
-
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
+use core::write;
+use core::assert;
+use core::assert_eq;
+use core::debug_assert_eq;
 
 
 pub struct Mutex<T: Send + Sync> {

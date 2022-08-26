@@ -42,6 +42,10 @@ cfg_if! {
         pub use core::option::Option;
         pub use core::panic;
         pub use core::arch;
+        pub use core::write;
+        pub use core::assert;
+        pub use core::assert_eq;
+        pub use core::debug_assert_eq;
     }
 }
 
