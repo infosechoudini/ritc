@@ -10,6 +10,7 @@ mod dynamic_tests;
 use core::cell::{Cell, RefCell};
 use crate::error::Error;
 use core::fmt;
+use core::prelude::rust_2024;
 
 
 /// A thread local storage key which owns its contents.
@@ -360,7 +361,7 @@ macro_rules! __thread_local_inner {
 
 /// An error returned by [`LocalKey::try_with`](struct.LocalKey.html#method.try_with).
 #[non_exhaustive]
-#[derive(Clone, Copy, Eq, PartialEq)]
+#[rust_2024::derive(Clone, Copy, Eq, PartialEq)]
 pub struct AccessError;
 
 impl fmt::Debug for AccessError {
@@ -878,7 +879,7 @@ pub mod fast {
     use core::mem;
     use crate::sys::thread_local_dtor::register_dtor;
 
-    #[derive(Copy, Clone)]
+    #[rust_2024::derive(Copy, Clone)]
     enum DtorState {
         Unregistered,
         Registered,

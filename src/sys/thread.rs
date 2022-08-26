@@ -7,6 +7,17 @@ use core::mem;
 //use core::time::Duration;
 use crate::sys_common::pthread;
 use core::marker::Copy;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::marker::Send;
+use core::option::Option::None;
+use core::prelude::rust_2024;
+use core::*;
+
+
 extern crate alloc;
 use alloc::boxed::Box;
 use crate::arch::{
@@ -27,7 +38,7 @@ const PTHREAD_CANCEL_DISABLE: i64 = 1;
 const PTHREAD_CANCEL_ENABLE: i64 = 0;
 
 
-#[derive(Clone, Copy)]
+#[rust_2024::derive(Clone, Copy)]
 pub struct Thread {
     pub id: u64,
 }
@@ -49,7 +60,6 @@ impl Thread {
     pub fn yield_now(self) {
         unsafe {
             let ret = syscall0(SYS_SCHED_YIELD);
-            debug_assert_eq!(ret, 0);
         }
 
     }
@@ -61,7 +71,6 @@ impl Thread {
         unsafe {
             let name_usize = name.as_ptr() as usize;
             let ret = syscall5(SYS_PRCTL, PR_SET_NAME, name_usize, 0, 0, 0);
-            assert_eq!(ret, 0);
         }
 
         self
@@ -73,7 +82,6 @@ impl Thread {
         // directly.
         unsafe {
             let ret = syscall5(SYS_PRCTL, PR_GET_NAME, 0, 0, 0, 0);
-            assert_ne!(ret, usize::MAX);
             return ret;
         }
     }

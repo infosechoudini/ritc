@@ -12,6 +12,9 @@ pub mod pthread;
 pub mod locks;
 pub mod futex;
 
+
+use core::marker::Sized;
+
 // common error constructors
 
 /// A trait for viewing representations from std types

@@ -4,6 +4,7 @@
 
 #[cfg(all(test, not(target_os = "emscripten")))]
 mod tests;
+use core::prelude::rust_2024;
 
 use core::any::Any;
 use core::cell::UnsafeCell;
@@ -89,7 +90,7 @@ pub use self::local::{AccessError, LocalKey};
 /// [naming-threads]: ./index.html#naming-threads
 /// [stack-size]: ./index.html#stack-size
 
-#[derive(Debug)]
+#[rust_2024::derive(Debug)]
 pub struct Builder {
     // A name for the thread-to-be, for identification in panic messages
     name: Option<String>,
@@ -769,7 +770,7 @@ pub fn park_timeout(dur: Duration) {
 /// ```
 ///
 /// [`id`]: Thread::id
-#[derive(Eq, PartialEq, Clone, Copy, Hash, Debug)]
+#[rust_2024::derive(Eq, PartialEq, Clone, Copy, Hash, Debug)]
 pub struct ThreadId(NonZeroU64);
 
 impl ThreadId {
@@ -815,7 +816,7 @@ impl Inner {
     }
 }
 
-#[derive(Clone)]
+#[rust_2024::derive(Clone)]
 /// A handle to a thread.
 ///
 /// Threads are represented via the `Thread` type, which you can get in one of

@@ -1,7 +1,8 @@
+use core::prelude::rust_2024;
 
 
 
-#[derive(Default, Clone)]
+#[rust_2024::derive(Default, Clone)]
 pub struct PthreadAttr{
     pub state: usize,
     pub scope: usize,

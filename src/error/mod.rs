@@ -25,6 +25,20 @@ use core::char;
 use core::fmt::{self, Debug, Display, Write};
 use core::mem::transmute;
 use core::str;
+use core::marker::Copy;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::marker::Send;
+use core::option::Option::None;
+use core::result::Result;
+use core::marker::Sized;
+use core::convert::From;
+use core::prelude::rust_2024;
+
+
 #[cfg(not(feature = "std"))]
 use alloc::string::String;
 #[cfg(not(feature = "std"))]
@@ -133,9 +147,10 @@ pub trait Error: Debug + Display {
 }
 
 mod private {
+    use core::prelude::rust_2024;
     // This is a hack to prevent `type_id` from being overridden by `Error`
     // implementations, since that can enable unsound downcasting.
-    #[derive(Debug)]
+    #[rust_2024::derive(Debug)]
     pub struct Internal;
 }
 

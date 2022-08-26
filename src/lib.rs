@@ -6,16 +6,24 @@
 #![feature(core_panic)]
 #![cfg_attr(not(feature = "use_libc"), feature(asm))]
 #![no_std]
-
+#![feature(no_core)]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
-//#![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+#![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+#![feature(prelude_2024)]
+
+
+#[macro_use]
+use rustc_std_workspace_core as core;
+
+#[macro_use]
+pub mod macros;
+
 
 #[cfg(test)]
 extern crate std;
 
 pub use arch::*;
 pub mod os;
-pub mod macros;
 pub mod error;
 //pub mod io;
 pub mod sys;

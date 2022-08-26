@@ -1,8 +1,20 @@
+use core::marker::Copy;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::marker::Send;
+use core::option::Option::None;
+use core::mem::MaybeUninit;
+use core::prelude::rust_2024;
+
+
 use crate::nr;
 use crate::arch::syscall0;
 
 /// System info structure returned by `sysinfo`.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+#[rust_2024::derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub struct SysInfo{
     pub uptime: i64,
     pub loads: [u64; 3],
@@ -23,7 +35,7 @@ pub fn sysinfo() -> Option<SysInfo> {
 
     unsafe { 
 
-        let mut buf = core::mem::MaybeUninit::uninit();
+        let mut buf = MaybeUninit::uninit();
         let ret = syscall0(nr::SYSINFO);
         buf.write(ret );
 

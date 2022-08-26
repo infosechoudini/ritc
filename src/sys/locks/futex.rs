@@ -5,6 +5,15 @@ use core::sync::atomic::{
 use crate::sys::futex::{futex_wait, futex_wake, futex_wake_all};
 use core::time::Duration;
 use core::cell::UnsafeCell;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::marker::Send;
+use core::option::Option::None;
+use core::hint;
+
 
 
 
@@ -87,7 +96,7 @@ impl <T: Send + Sync> Mutex<T> {
                 return state;
             }
 
-            core::hint::spin_loop();
+            hint::spin_loop();
             spin -= 1;
         }
     }

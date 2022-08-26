@@ -2,6 +2,12 @@ use core::sync::atomic::{
     AtomicU32,
     Ordering::{Acquire, Relaxed, Release},
 };
+use core::result::Result::Err;
+use core::ops::Fn;
+use core::result::Result::Ok;
+use core::option::Option::None;
+use core::hint;
+
 use crate::sys::futex::{futex_wait, futex_wake, futex_wake_all};
 
 pub type MovableRwLock = RwLock;
@@ -90,10 +96,6 @@ impl RwLock {
     pub unsafe fn read_unlock(&self) {
         let state = self.state.fetch_sub(READ_LOCKED, Release) - READ_LOCKED;
 
-        // It's impossible for a reader to be waiting on a read-locked RwLock,
-        // except if there is also a writer waiting.
-        debug_assert!(!has_readers_waiting(state) || has_writers_waiting(state));
-
         // Wake up a writer if we were the last reader and there's a writer waiting.
         if is_unlocked(state) && has_writers_waiting(state) {
             self.wake_writer_or_readers(state);
@@ -157,8 +159,6 @@ impl RwLock {
     #[inline]
     pub unsafe fn write_unlock(&self) {
         let state = self.state.fetch_sub(WRITE_LOCKED, Release) - WRITE_LOCKED;
-
-        debug_assert!(is_unlocked(state));
 
         if has_writers_waiting(state) || has_readers_waiting(state) {
             self.wake_writer_or_readers(state);
@@ -228,7 +228,6 @@ impl RwLock {
     /// back to waking up readers if there was no writer to wake up.
     #[cold]
     fn wake_writer_or_readers(&self, mut state: u32) {
-        assert!(is_unlocked(state));
 
         // The readers waiting bit might be turned on at any point now,
         // since readers will block when there's anything waiting.
@@ -294,7 +293,7 @@ impl RwLock {
             if f(state) || spin == 0 {
                 return state;
             }
-            core::hint::spin_loop();
+            hint::spin_loop();
             spin -= 1;
         }
     }

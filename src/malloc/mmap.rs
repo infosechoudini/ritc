@@ -1,5 +1,9 @@
-#![cfg(not(feature = "use_libc"))]
+use core::result::Result::Ok;
+use core::result::Result::Err;
+use core::result::Result;
+use core::prelude::rust_2024;
 use core::arch::asm;
+
 /// Some unix constants and an mmap function using assembly.
 ///
 /// The constants were taken from sys/mman.h, and have been tested on osx and
@@ -46,7 +50,7 @@ pub const MAP_ANON: u64 = 0x20;
 
 const _MAP_ANONYMOUS: u64 = MAP_ANON;
 
-#[derive(Debug)]
+#[rust_2024::derive(Debug)]
 pub struct MmapError {
     code: i64,
 }

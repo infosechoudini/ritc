@@ -31,6 +31,18 @@ use core::alloc::{GlobalAlloc, Layout};
 use core::mem::MaybeUninit;
 use core::ptr::{null_mut, NonNull};
 use core::sync::atomic::{AtomicU8, Ordering};
+use core::result::Result::Ok;
+use core::result::Result::Err;
+use core::result::Result;
+use core::default::Default;
+use core::marker::Send;
+use core::marker::Sync;
+use core::option::Option::Some;
+use core::ops::Drop;
+use core::mem;
+use core::prelude::rust_2024;
+
+use core::hint;
 
 #[cfg(feature = "use_libc")]
 use errno::Errno;
@@ -69,7 +81,7 @@ pub trait HeapGrower: Sync + Send {
 
 /// SyscallHeapGrower uses virtual memory to grow the heap upon request.
 #[cfg(not(feature = "use_libc"))]
-#[derive(Default)]
+#[rust_2024::derive(Default)]
 pub struct SyscallHeapGrower {
     // Just for tracking, not really needed
     pages: usize,
@@ -142,10 +154,10 @@ unsafe impl <G> Send for RawAlloc<G>{}
 
 impl<G> Drop for RawAlloc<G> {
     fn drop(&mut self) {
-        let blocks = core::mem::take(&mut self.blocks);
+        let blocks = mem::take(&mut self.blocks);
         // When we drop an allocator, we lose all access to the memory it has
         // freed.
-        core::mem::forget(blocks);
+        mem::forget(blocks);
     }
 }
 
@@ -330,7 +342,7 @@ impl<G: HeapGrower + Default + Sync + Send> GenericAllocator<G> {
                 // Spin while we wait for the state to become 2
                 loop {
                     // Hint to the processor that we're in a spin loop
-                    core::hint::spin_loop();
+                    hint::spin_loop();
 
                     // Check if the
                     match self.init.load(Ordering::SeqCst) {
@@ -354,7 +366,7 @@ impl<G: HeapGrower + Default + Sync + Send> GenericAllocator<G> {
     }
 }
 
-#[derive(Default)]
+#[rust_2024::derive(Default)]
 pub struct UnixAllocator {
     #[cfg(not(feature = "use_libc"))]
     alloc: GenericAllocator<SyscallHeapGrower>,

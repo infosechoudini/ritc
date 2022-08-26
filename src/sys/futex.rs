@@ -10,8 +10,18 @@ use crate::os::oserror::*;
 use core::ptr::null;
 use core::sync::atomic::Ordering::Relaxed;
 use core::sync::atomic::AtomicI32;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::sync;
+use core::prelude::rust_2024;
+
 
 use crate::arch::nr::GETTID;
+
+
 
 
 const CLONE_VM: usize             = 0x100;
@@ -65,7 +75,7 @@ use crate::arch::{
 };
 
 #[must_use]
-#[derive(Debug, Clone, Copy)]
+#[rust_2024::derive(Debug, Clone, Copy)]
 pub struct FutexCall {
 	uaddr: *const AtomicI32,
 	futex_op: i32,
@@ -199,7 +209,7 @@ pub fn futex_wait(futex: &AtomicU32, expected: u32, timeout: Option<Duration>) -
         timeout.and_then(|d| Some(timespec{tv_sec: CLOCK_MONOTONIC as i64, tv_nsec: d.as_nanos() as i64 }));
 
 
-    let f = futex.load(core::sync::atomic::Ordering::Relaxed);
+    let f = futex.load(sync::atomic::Ordering::Relaxed);
     loop {
         // Use FUTEX_WAIT_BITSET rather than FUTEX_WAIT to be able to give an
         // absolute time rather than a relative time.

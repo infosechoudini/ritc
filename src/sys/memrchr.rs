@@ -3,6 +3,15 @@
 
 use core::cmp;
 use core::mem;
+use core::marker::Copy;
+use core::option::Option::Some;
+use core::option::Option;
+use core::result::Result::Err;
+use core::result::Result::Ok;
+use core::marker::Sync;
+use core::marker::Send;
+use core::option::Option::None;
+
 
 const LO_U64: u64 = 0x0101010101010101;
 const HI_U64: u64 = 0x8080808080808080;

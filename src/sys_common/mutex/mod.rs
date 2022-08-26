@@ -4,6 +4,13 @@ use crate::malloc::mmap::{self, mmap, MmapError};
 use core::ptr::{null_mut, NonNull};
 use core::marker::Sized;
 use crate::sys::locks::futex::Mutex;
+use core::marker::Sync;
+use core::marker::Send;
+use core::ops::Drop;
+
+
+
+
 
 /// An OS-based mutual exclusion lock, meant for use in static variables.
 ///

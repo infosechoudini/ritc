@@ -42,6 +42,20 @@
 use core::fmt::{self, Display};
 use core::ops::Range;
 use core::ptr::NonNull;
+use core::option::Option::{Some, None};
+use core::option::Option;
+use core::default::Default;
+use core::ops::FnMut;
+use core::result::Result;
+use core::convert::From;
+use core::iter::IntoIterator;
+use core::marker::Send;
+use core::iter::Iterator;
+use core::ops::Drop;
+use core::mem;
+use core::slice;
+use core::ptr;
+use core::prelude::rust_2024;
 
 /// The header for our free blocks.
 ///
@@ -100,7 +114,7 @@ impl FreeHeader {
     ) -> NonNull<FreeHeader> {
         let header = FreeHeader { next, size };
         let raw_ptr: NonNull<FreeHeader> = ptr.cast();
-        core::ptr::write(ptr.as_ptr() as *mut FreeHeader, header);
+        ptr::write(ptr.as_ptr() as *mut FreeHeader, header);
         raw_ptr
     }
 }
@@ -149,7 +163,7 @@ impl FreeBlock {
     pub fn as_slice(&self) -> &[u8] {
         unsafe {
             let size = self.header_view().size;
-            core::slice::from_raw_parts(self.header.as_ptr() as *const u8, size)
+            slice::from_raw_parts(self.header.as_ptr() as *const u8, size)
         }
     }
 
@@ -176,7 +190,7 @@ impl FreeBlock {
         };
 
         // We've decomposed self, so now we forget about it and do not call Drop.
-        core::mem::forget(self);
+        mem::forget(self);
 
         (range, next)
     }
@@ -294,7 +308,7 @@ impl FreeBlock {
                 self.header_mut().size += new_size;
                 // `block` has now been incorporated into `self`, so we forget
                 // about it as a separate entity.
-                core::mem::forget(block);
+                mem::forget(block);
             }
             (1, self)
         } else {
@@ -363,7 +377,7 @@ impl FreeBlock {
             header.next = next.take_next();
             // We've incorporated the memory from 'next' into self, so we need
             // to forget about it as a separate entity
-            core::mem::forget(next);
+            mem::forget(next);
         }
 
         true
@@ -449,7 +463,7 @@ impl fmt::Display for BlockList {
 
 /// Validity contains a representation of all invalid states found in a
 /// BlockList.
-#[derive(Default, Debug)]
+#[rust_2024::derive(Default, Debug)]
 pub struct Validity {
     /// Number of blocks overlapping other blocks.
     ///
@@ -480,7 +494,7 @@ impl From<Validity> for bool {
     }
 }
 
-#[derive(Default, Debug)]
+#[rust_2024::derive(Default, Debug)]
 pub struct Stats {
     pub length: usize,
     pub size: usize,
@@ -692,7 +706,7 @@ impl BlockList {
                 first.header_mut().size += size;
                 // Now we forget `block` as a separate entity, because its been
                 // absorbed
-                core::mem::forget(new_block);
+                mem::forget(new_block);
                 // Now that 'previous' has grown, it's possible that 'previous'
                 // is now adjacent to 'next', so we try and merge them. This may
                 // or may not actually happen, and either way, we're left with a

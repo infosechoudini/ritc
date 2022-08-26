@@ -1,10 +1,14 @@
 #![allow(dead_code)] // not used on all platforms
 
 pub mod attr;
-
+use core::result::Result::Err;
 use crate::arch::{syscall5, syscall0, syscall3, syscall2, syscall4};
 use crate::arch::nr::GETTID;
 use crate::os::oserror::Error;
+use core::result::Result::Ok;
+use core::result::Result;
+use core::prelude::rust_2024;
+
 
 const CLONE_VM: usize             = 0x100;
 const CLONE_FS: usize             = 0x200;
@@ -39,19 +43,19 @@ const SIGABRT: usize = 6;
 const SYS_RT_SIGPROCMASK: usize = 14;
 const SIG_UNBLOCK: usize = 1;
 
-#[derive(Default, Clone)]
+#[rust_2024::derive(Default, Clone)]
 pub struct PthreadBase {
     pub pthread: Pthread,
     pub attr: attr::PthreadAttr,
 }
 
-#[derive(Default, Clone)]
+#[rust_2024::derive(Default, Clone)]
 pub struct Pthread{
     pub thread: u64,
 }
 
 
-#[derive(Default, Clone)]
+#[rust_2024::derive(Default, Clone)]
 pub struct CloneArgs {
     pub flags: usize,
     pub pidfd: usize,
