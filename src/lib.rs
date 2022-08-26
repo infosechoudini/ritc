@@ -8,7 +8,7 @@
 #![no_std]
 #![feature(no_core)]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
-#![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+#![cfg_attr(feature = "rustc-dep-of-std", no_std)]
 #![feature(prelude_2024)]
 
 
