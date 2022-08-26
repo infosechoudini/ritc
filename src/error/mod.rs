@@ -13,7 +13,7 @@
 // reconsider what crate these items belong in.
 
 
-extern crate alloc;
+
 use alloc::borrow::Cow;
 use alloc::alloc::LayoutError;
 use alloc::string::String;

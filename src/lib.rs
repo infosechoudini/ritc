@@ -5,10 +5,9 @@
 #![feature(core_intrinsics)]
 #![feature(decl_macro)]
 #![feature(core_panic)]
-#![no_std]
 #![feature(prelude_2024)]
+#![cfg_attr(feature = "rustc-dep-of-std", no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(no_core), no_core)]
-
 
 
 
@@ -17,16 +16,20 @@
 #[macro_use]
 extern crate core;
 
+#[cfg(not(feature = "rustc-dep-of-std"))]
+#[allow(unused_extern_crates)]
+extern crate alloc;
+
 #[cfg(test)]
-#[macro_use]
 extern crate std;
 
 pub mod macros;
 
-/* 
+
+
 cfg_if! {
     if #[cfg(feature = "rustc-dep-of-std")] {
-        extern crate rustc_std_workspace_core as core;
+        pub use core;
         pub use core::iter;
         pub use core::ops;
         pub use core::option;
@@ -37,9 +40,11 @@ cfg_if! {
         pub use core::clone::Clone;
         pub use core::marker::{Copy, Send, Sync};
         pub use core::option::Option;
+        pub use core::panic;
+        pub use core::arch;
     }
 }
-*/
+
 
 pub use arch::*;
 pub mod os;
