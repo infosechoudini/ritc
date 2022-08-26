@@ -46,6 +46,10 @@ cfg_if! {
         pub use core::assert;
         pub use core::assert_eq;
         pub use core::debug_assert_eq;
+        pub use core::ops::Drop;
+        pub use core::cmp::Eq;
+        pub use core::cmp::PartialEq;
+        pub use core::fmt::Debug;
     }
 }
 
