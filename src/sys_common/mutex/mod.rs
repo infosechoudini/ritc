@@ -1,4 +1,9 @@
 use crate::sys::locks as imp;
+use crate::malloc::allocator::{HeapGrower, SyscallHeapGrower, ToyHeap, ToyHeapOverflowError, round_up};
+use crate::malloc::mmap::{self, mmap, MmapError};
+use core::ptr::{null_mut, NonNull};
+use core::marker::Sized;
+use crate::sys::locks::futex::Mutex;
 
 /// An OS-based mutual exclusion lock, meant for use in static variables.
 ///
@@ -9,14 +14,16 @@ use crate::sys::locks as imp;
 ///
 /// This is a wrapper around `imp::Mutex` that does *not* call `init()` and
 /// `destroy()`.
-pub struct StaticMutex(imp::Mutex);
+/*pub struct StaticMutex<T: Send + Sync> {
+    mutex: imp::Mutex<T>,
+}
 
-unsafe impl Sync for StaticMutex {}
-
-impl StaticMutex {
+impl <T: Send + Sync> StaticMutex<T>{
     /// Creates a new mutex for use.
-    pub const fn new() -> Self {
-        Self(imp::Mutex::new())
+    pub const fn new(t: T) -> Self {
+        Self{
+            mutex: imp::Mutex::new(t)
+        }
     }
 
     /// Calls raw_lock() and then returns an RAII guard to guarantee the mutex
@@ -25,20 +32,38 @@ impl StaticMutex {
     /// It is undefined behaviour to call this function while locked by the
     /// same thread.
     #[inline]
-    pub unsafe fn lock(&'static self) -> StaticMutexGuard {
-        self.0.lock();
-        StaticMutexGuard(&self.0)
+    pub unsafe fn lock(&self) -> StaticMutexGuard<T> {
+        let x = self.mutex.lock();
+        StaticMutexGuard{
+            mutex: imp::Mutex::new(x.to_owned()),
+        }
     }
 }
+*/
 
 #[must_use]
-pub struct StaticMutexGuard(&'static imp::Mutex);
+pub struct StaticMutexGuard<T: Send + Sync>{
+    mutex: Mutex<T>,
+}
 
-impl Drop for StaticMutexGuard {
+impl <T: Send + Sync> StaticMutexGuard<T> {
+    pub fn new(t: T) -> Self {
+        Self{
+            mutex: imp::Mutex::new(t),
+        }
+    }
+    pub fn stats(&self) {}
+    pub fn alloc(&self) {}
+    pub fn dealloc(&self) {}
+
+}
+
+
+impl <T: Send + Sync> Drop for StaticMutexGuard<T>{
     #[inline]
     fn drop(&mut self) {
         unsafe {
-            self.0.unlock();
+            self.mutex.unlock();
         }
     }
 }
@@ -54,33 +79,36 @@ impl Drop for StaticMutexGuard {
 /// This is either a wrapper around `Box<imp::Mutex>` or `imp::Mutex`,
 /// depending on the platform. It is boxed on platforms where `imp::Mutex` may
 /// not be moved.
-pub struct MovableMutex(imp::MovableMutex);
+pub struct MovableMutex<T: Send + Sync>{
+    mutex: imp::Mutex<T>,
+}
 
-unsafe impl Sync for MovableMutex {}
 
-impl MovableMutex {
+impl <T: Send + Sync> MovableMutex<T> {
     /// Creates a new mutex.
-    pub fn new() -> Self {
-        let mut mutex = imp::MovableMutex::from(imp::Mutex::new());
+    pub fn new(t: T) -> Self {
+        let mut mutex = imp::Mutex::from(imp::Mutex::new(t));
         unsafe { mutex.init() };
-        Self(mutex)
+        Self{
+            mutex: mutex,
+        }
     }
 
-    pub(super) fn raw(&self) -> &imp::Mutex {
-        &self.0
+    pub(super) fn raw(&self) -> &imp::Mutex<T> {
+        &&self.mutex
     }
 
     /// Locks the mutex blocking the current thread until it is available.
     #[inline]
-    pub fn raw_lock(&self) {
-        unsafe { self.0.lock() }
+    pub fn raw_lock(&self) -> &Mutex<T>{
+        unsafe { self.mutex.lock() }
     }
 
     /// Attempts to lock the mutex without blocking, returning whether it was
     /// successfully acquired or not.
     #[inline]
     pub fn try_lock(&self) -> bool {
-        unsafe { self.0.try_lock() }
+        unsafe { self.mutex.try_lock() }
     }
 
     /// Unlocks the mutex.
@@ -89,12 +117,12 @@ impl MovableMutex {
     /// mutex.
     #[inline]
     pub unsafe fn raw_unlock(&self) {
-        self.0.unlock()
+        self.mutex.unlock();
     }
 }
 
-impl Drop for MovableMutex {
+impl <T: Send + Sync> Drop for MovableMutex<T> {
     fn drop(&mut self) {
-        unsafe { self.0.destroy() };
+        unsafe { self.mutex.destroy() };
     }
 }

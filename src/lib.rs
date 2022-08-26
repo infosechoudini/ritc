@@ -1,21 +1,24 @@
-//#![deny(warnings)]
+#![allow(warnings)]
 #![allow(unused_imports)]
 #![feature(default_alloc_error_handler)]
 #![feature(allocator_api)]
 #![feature(decl_macro)]
 #![feature(core_panic)]
-#![no_main]
+#![cfg_attr(not(feature = "use_libc"), feature(asm))]
+
+
 #[cfg(test)]
 extern crate std;
 
 pub use arch::*;
-
+pub mod os;
 pub mod macros;
 pub mod error;
 //pub mod io;
 pub mod sys;
 //pub mod thread;
 pub mod sys_common;
+pub mod malloc;
 //pub mod ffi;
 
 #[cfg(all(target_os = "freebsd",
@@ -73,8 +76,3 @@ pub mod arch;
 target_arch = "x86_64"))]
 #[path="arch/linux-x86_64/mod.rs"]
 pub mod arch;
-
-use std::alloc::System;
-
-#[global_allocator]
-static A: System = System;

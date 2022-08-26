@@ -294,7 +294,7 @@ impl RwLock {
             if f(state) || spin == 0 {
                 return state;
             }
-            crate::hint::spin_loop();
+            core::hint::spin_loop();
             spin -= 1;
         }
     }

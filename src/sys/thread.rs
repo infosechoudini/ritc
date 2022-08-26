@@ -14,13 +14,17 @@ use crate::arch::{
     syscall4,
     syscall5,
     syscall6,
-
 };
+
+use crate::sys::timed_wait;
 
 const SYS_SCHED_YIELD: usize = 24; 
 const SYS_PRCTL: usize = 157;
 const PR_SET_NAME: usize = 15;
 const PR_GET_NAME: usize = 16;
+
+const PTHREAD_CANCEL_DISABLE: i64 = 1;
+const PTHREAD_CANCEL_ENABLE: i64 = 0;
 
 
 #[derive(Clone, Copy)]
@@ -101,15 +105,9 @@ impl Thread {
             }
         }
     }
-
-    pub fn join(self) {
-        unsafe {
-            let ret = libc::pthread_join(self.id, ptr::null_mut());
-            mem::forget(self);
-            assert!(ret == 0, "failed to join thread: {}", io::Error::from_raw_os_error(ret));
-        }
-    }
     */
+
+
 
     pub fn id(&self) -> u64 {
         self.id
@@ -120,6 +118,7 @@ impl Thread {
         mem::forget(self);
         id
     }
+
 }
 
 /*

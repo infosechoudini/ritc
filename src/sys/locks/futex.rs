@@ -1,24 +1,26 @@
-use crate::sync::atomic::{
+use core::sync::atomic::{
     AtomicU32,
     Ordering::{Acquire, Relaxed, Release},
 };
 use crate::sys::futex::{futex_wait, futex_wake, futex_wake_all};
-use crate::time::Duration;
+use core::time::Duration;
+use core::cell::UnsafeCell;
 
-pub type MovableMutex = Mutex;
-pub type MovableCondvar = Condvar;
 
-pub struct Mutex {
+
+pub struct Mutex<T: Send + Sync> {
     /// 0: unlocked
     /// 1: locked, no other threads waiting
     /// 2: locked, and other threads waiting (contended)
-    futex: AtomicU32,
+    pub futex: AtomicU32,
+    pub data: UnsafeCell<T>,
+
 }
 
-impl Mutex {
+impl <T: Send + Sync> Mutex<T> {
     #[inline]
-    pub const fn new() -> Self {
-        Self { futex: AtomicU32::new(0) }
+    pub const fn new(t: T) -> Self {
+        Self { futex: AtomicU32::new(0), data: UnsafeCell::new(t) }
     }
 
     #[inline]
@@ -33,10 +35,12 @@ impl Mutex {
     }
 
     #[inline]
-    pub unsafe fn lock(&self) {
+    pub unsafe fn lock(&self) -> &Self{
         if self.futex.compare_exchange(0, 1, Acquire, Relaxed).is_err() {
             self.lock_contended();
         }
+        self
+
     }
 
     #[cold]
@@ -83,13 +87,13 @@ impl Mutex {
                 return state;
             }
 
-            crate::hint::spin_loop();
+            core::hint::spin_loop();
             spin -= 1;
         }
     }
 
     #[inline]
-    pub unsafe fn unlock(&self) {
+    pub unsafe fn unlock(&self) -> &Self{
         if self.futex.swap(0, Release) == 2 {
             // We only wake up one thread. When that thread locks the mutex, it
             // will mark the mutex as contended (2) (see lock_contended above),
@@ -97,6 +101,8 @@ impl Mutex {
             // woken up eventually.
             self.wake();
         }
+
+        self
     }
 
     #[cold]
@@ -112,7 +118,8 @@ pub struct Condvar {
     futex: AtomicU32,
 }
 
-impl Condvar {
+impl Condvar{
+
     #[inline]
     pub const fn new() -> Self {
         Self { futex: AtomicU32::new(0) }
@@ -137,15 +144,15 @@ impl Condvar {
         futex_wake_all(&self.futex);
     }
 
-    pub unsafe fn wait(&self, mutex: &Mutex) {
+    pub unsafe fn wait<T: Send + Sync>(&self, mutex: &Mutex<T>) {
         self.wait_optional_timeout(mutex, None);
     }
 
-    pub unsafe fn wait_timeout(&self, mutex: &Mutex, timeout: Duration) -> bool {
+    pub unsafe fn wait_timeout<T: Send + Sync>(&self, mutex: &Mutex<T>, timeout: Duration) -> bool {
         self.wait_optional_timeout(mutex, Some(timeout))
     }
 
-    unsafe fn wait_optional_timeout(&self, mutex: &Mutex, timeout: Option<Duration>) -> bool {
+    unsafe fn wait_optional_timeout<T: Send + Sync>(&self, mutex: &Mutex<T>, timeout: Option<Duration>) -> bool {
         // Examine the notification counter _before_ we unlock the mutex.
         let futex_value = self.futex.load(Relaxed);
 

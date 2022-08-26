@@ -4,11 +4,13 @@ pub mod memrchr;
 pub mod thread;
 pub mod mutex;
 pub mod kernel_copy;
+pub mod timed_wait;
+pub mod pthread;
 //pub mod thread_info;
 //pub mod thread_local_dtor;
 //pub mod thread_local_key;
-//pub mod locks;
-//pub mod futex;
+pub mod locks;
+pub mod futex;
 
 // common error constructors
 
