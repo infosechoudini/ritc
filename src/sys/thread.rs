@@ -16,10 +16,9 @@ use core::marker::Send;
 use core::option::Option::None;
 use core::prelude::rust_2024;
 use core::*;
-
-
-extern crate alloc;
 use alloc::boxed::Box;
+
+
 use crate::arch::{
     syscall0,
     syscall4,
