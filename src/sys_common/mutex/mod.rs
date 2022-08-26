@@ -7,7 +7,11 @@ use crate::sys::locks::futex::Mutex;
 use core::marker::Sync;
 use core::marker::Send;
 use core::ops::Drop;
-
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
+use core::marker::Copy;
 
 
 
