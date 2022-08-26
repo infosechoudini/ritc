@@ -7,6 +7,9 @@
 #![cfg_attr(not(feature = "use_libc"), feature(asm))]
 #![no_std]
 
+#![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
+//#![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+
 #[cfg(test)]
 extern crate std;
 
