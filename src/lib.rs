@@ -11,13 +11,8 @@
 #![cfg_attr(feature = "rustc-dep-of-std", no_std)]
 #![feature(prelude_2024)]
 
-
-#[macro_use]
-use rustc_std_workspace_core as core;
-
 #[macro_use]
 pub mod macros;
-
 
 #[cfg(test)]
 extern crate std;
