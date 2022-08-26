@@ -37,6 +37,8 @@ cfg_if! {
         pub use core::hash;
         pub use core::num;
         pub use core::mem;
+        pub use core::clone;
+        pub use core::marker;
         pub use core::clone::Clone;
         pub use core::marker::{Copy, Send, Sync};
         pub use core::option::Option;
