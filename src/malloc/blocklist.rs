@@ -65,6 +65,7 @@ use core::write;
 use core::assert;
 use core::assert_eq;
 use core::debug_assert_eq;
+use core::unreachable;
 
 /// The header for our free blocks.
 ///

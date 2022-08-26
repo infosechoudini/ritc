@@ -51,6 +51,8 @@ cfg_if! {
         pub use core::cmp::PartialEq;
         pub use core::fmt::Debug;
         pub use core::prelude::rust_2024;
+        pub use core::unreachable;
+
     }
 }
 
