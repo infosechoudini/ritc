@@ -12,14 +12,17 @@
 // coherence challenge (e.g., specialization, neg impls, etc) we can
 // reconsider what crate these items belong in.
 
-use core::convert::Infallible;
 
-#[cfg(not(feature = "std"))]
 extern crate alloc;
-#[cfg(not(feature = "std"))]
-use alloc::alloc::LayoutError;
-use core::any::TypeId;
 use alloc::borrow::Cow;
+use alloc::alloc::LayoutError;
+use alloc::string::String;
+use alloc::string;
+use alloc::sync::Arc;
+use alloc::boxed::Box; 
+use alloc::collections::TryReserveError;
+
+use core::any::TypeId;
 use core::cell;
 use core::char;
 use core::fmt::{self, Debug, Display, Write};
@@ -37,16 +40,10 @@ use core::result::Result;
 use core::marker::Sized;
 use core::convert::From;
 use core::prelude::rust_2024;
+use core::convert::Infallible;
 
 
-#[cfg(not(feature = "std"))]
-use alloc::string::String;
-#[cfg(not(feature = "std"))]
-use alloc::string;
-#[cfg(not(feature = "std"))]
-use alloc::sync::Arc;
-#[cfg(not(feature = "std"))]
-use alloc::boxed::Box; 
+
 
 /// `Error` is a trait representing the basic expectations for error values,
 /// i.e., values of type `E` in [`Result<T, E>`].
@@ -491,7 +488,7 @@ impl Error for char::CharTryFromError {
 }
 
 
-impl Error for alloc::collections::TryReserveError {}
+impl Error for TryReserveError {}
 
 
 // Copied from `any.rs`.

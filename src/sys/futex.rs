@@ -22,8 +22,6 @@ use core::prelude::rust_2024;
 use crate::arch::nr::GETTID;
 
 
-
-
 const CLONE_VM: usize             = 0x100;
 const CLONE_FS: usize             = 0x200;
 const CLONE_FILES: usize          = 0x400;

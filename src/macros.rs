@@ -53,6 +53,7 @@ macro_rules! syscall {
 ///
 /// This allows you to conveniently provide a long list #[cfg]'d blocks of code
 /// without having to rewrite each clause multiple times.
+#[macro_export]
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(

@@ -2,20 +2,42 @@
 #![allow(unused_imports)]
 #![feature(default_alloc_error_handler)]
 #![feature(allocator_api)]
+#![feature(core_intrinsics)]
 #![feature(decl_macro)]
 #![feature(core_panic)]
-#![cfg_attr(not(feature = "use_libc"), feature(asm))]
 #![no_std]
-#![feature(no_core)]
-#![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
-#![cfg_attr(feature = "rustc-dep-of-std", no_std)]
 #![feature(prelude_2024)]
+#![cfg_attr(feature = "rustc-dep-of-std", feature(no_core), no_core)]
 
+
+
+
+#[cfg(not(feature = "rustc-dep-of-std"))]
+#[allow(unused_extern_crates)]
 #[macro_use]
-pub mod macros;
+extern crate core;
 
 #[cfg(test)]
+#[macro_use]
 extern crate std;
+
+pub mod macros;
+
+cfg_if! {
+    if #[cfg(feature = "rustc-dep-of-std")] {
+        extern crate rustc_std_workspace_core as core;
+        pub use core::iter;
+        pub use core::ops;
+        pub use core::option;
+        pub use core::fmt;
+        pub use core::hash;
+        pub use core::num;
+        pub use core::mem;
+        pub use core::clone::Clone;
+        pub use core::marker::{Copy, Send, Sync};
+        pub use core::option::Option;
+    }
+}
 
 pub use arch::*;
 pub mod os;

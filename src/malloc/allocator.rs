@@ -43,9 +43,7 @@ use core::mem;
 use core::prelude::rust_2024;
 
 use core::hint;
-
-#[cfg(feature = "use_libc")]
-use errno::Errno;
+use core::panic;
 use crate::sys::locks::futex::Mutex;
 use crate::sys_common::mutex::MovableMutex;
 

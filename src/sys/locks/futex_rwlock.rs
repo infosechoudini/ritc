@@ -7,6 +7,7 @@ use core::ops::Fn;
 use core::result::Result::Ok;
 use core::option::Option::None;
 use core::hint;
+use core::panic;
 
 use crate::sys::futex::{futex_wait, futex_wake, futex_wake_all};
 
