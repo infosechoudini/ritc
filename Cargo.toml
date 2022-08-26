@@ -20,7 +20,7 @@ compiler_builtins = { version = "0.1.2", optional = true }
 
 
 [features]
-default = []
+default = ["rustc-dep-of-std"]
 std = []
 nightly = []
 rustc-dep-of-std = [
