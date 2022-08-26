@@ -15,12 +15,13 @@ crate-type = ["rlib"]
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
+rustc-std-workspace-alloc = { version = "1.0.0", optional = true }
 
 [features]
-default = []
+default = ['rustc-dep-of-std']
 std = []
 align = []
-rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
+rustc-dep-of-std = ['align', 'rustc-std-workspace-core', 'rustc-std-workspace-alloc']
 
 [dev-dependencies]
 criterion = { version = "0.3.5", features = ["html_reports"] }
