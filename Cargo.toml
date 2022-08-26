@@ -11,7 +11,7 @@ categories = ["network-programming", "no-std-library", "embedded-development", "
 
 [lib]
 name = "ritc"
-crate-type = ["rlib", "cdylib"]
+crate-type = ["rlib"]
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }

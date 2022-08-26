@@ -5,7 +5,7 @@
 #![feature(decl_macro)]
 #![feature(core_panic)]
 #![cfg_attr(not(feature = "use_libc"), feature(asm))]
-
+#![no_std]
 
 #[cfg(test)]
 extern crate std;
