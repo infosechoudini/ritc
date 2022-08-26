@@ -45,6 +45,7 @@ use core::cmp::Eq;
 use core::cmp::PartialEq;
 use core::fmt::Debug;
 use core::clone::Clone;
+use core::marker::Copy;
 use core::write;
 use core::assert;
 use core::assert_eq;

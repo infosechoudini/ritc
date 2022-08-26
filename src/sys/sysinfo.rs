@@ -12,6 +12,9 @@ use core::cmp::Eq;
 use core::cmp::PartialEq;
 use core::fmt::Debug;
 use core::clone::Clone;
+use core::marker::Copy;
+
+
 
 use crate::nr;
 use crate::arch::syscall0;
