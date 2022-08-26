@@ -23,6 +23,7 @@ extern crate std;
 
 pub mod macros;
 
+/* 
 cfg_if! {
     if #[cfg(feature = "rustc-dep-of-std")] {
         extern crate rustc_std_workspace_core as core;
@@ -38,6 +39,7 @@ cfg_if! {
         pub use core::option::Option;
     }
 }
+*/
 
 pub use arch::*;
 pub mod os;
