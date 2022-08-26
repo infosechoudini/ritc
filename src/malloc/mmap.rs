@@ -3,6 +3,15 @@ use core::result::Result::Err;
 use core::result::Result;
 use core::prelude::rust_2024;
 use core::arch::asm;
+use core::hint;
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
+use core::write;
+use core::assert;
+use core::assert_eq;
+use core::debug_assert_eq;
 
 /// Some unix constants and an mmap function using assembly.
 ///

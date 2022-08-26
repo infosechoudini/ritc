@@ -56,6 +56,15 @@ use core::mem;
 use core::slice;
 use core::ptr;
 use core::prelude::rust_2024;
+use core::hint;
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::clone::Clone;
+use core::write;
+use core::assert;
+use core::assert_eq;
+use core::debug_assert_eq;
 
 /// The header for our free blocks.
 ///
