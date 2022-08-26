@@ -43,8 +43,6 @@ use core::fmt::{self, Display};
 use core::ops::Range;
 use core::ptr::NonNull;
 
-use static_assertions::const_assert;
-
 /// The header for our free blocks.
 ///
 /// The header includes a pointer to the next free block, and the size of the
@@ -71,9 +69,6 @@ pub struct FreeHeader {
 /// simplify things.
 const HEADER_SIZE: usize = 16;
 
-// The constant we use for HEADER_SIZE needs to be bigger than the contents of a
-// header, so we assert that here.
-const_assert!(HEADER_SIZE >= core::mem::size_of::<FreeHeader>());
 
 /// An enum for easy comparison of blocks and their order
 pub enum Relation {
