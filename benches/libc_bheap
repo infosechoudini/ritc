@@ -1,0 +1,36 @@
+LIBC
+running 6 tests
+
+bench_pop               time:   [402.48 µs 404.08 µs 405.89 µs]                      
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+
+bench_push              time:   [588.59 µs 590.30 µs 592.35 µs]                       
+Found 7 outliers among 100 measurements (7.00%)
+  5 (5.00%) high mild
+  2 (2.00%) high severe
+
+bench_from_vec          time:   [551.16 µs 552.34 µs 553.63 µs]                           
+Found 6 outliers among 100 measurements (6.00%)
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+
+bench_peek_mut_deref_mut                                                                            
+                        time:   [356.72 µs 357.52 µs 358.38 µs]
+Found 8 outliers among 100 measurements (8.00%)
+  3 (3.00%) high mild
+  5 (5.00%) high severe
+
+bench_into_sorted_vec   time:   [372.67 µs 373.50 µs 374.40 µs]                                  
+Found 9 outliers among 100 measurements (9.00%)
+  4 (4.00%) high mild
+  5 (5.00%) high severe
+
+bench_find_smallest_1000                                                                            
+                        time:   [245.35 µs 245.89 µs 246.49 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  5 (5.00%) high mild
+  4 (4.00%) high severe
+
+MmapAllocator

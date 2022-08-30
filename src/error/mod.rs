@@ -41,10 +41,9 @@ use core::marker::Sized;
 use core::convert::From;
 use core::prelude::rust_2024;
 use core::convert::Infallible;
-
+use core::iter::Iterator;
 use core::cmp::Eq;
 use core::cmp::PartialEq;
-use core::fmt::Debug;
 use core::clone::Clone;
 
 /// `Error` is a trait representing the basic expectations for error values,
@@ -147,6 +146,7 @@ pub trait Error: Debug + Display {
 
 mod private {
     use core::prelude::rust_2024;
+    use core::fmt::Debug;
     // This is a hack to prevent `type_id` from being overridden by `Error`
     // implementations, since that can enable unsound downcasting.
     #[rust_2024::derive(Debug)]

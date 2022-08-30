@@ -1,3 +1,8 @@
+pub use core::write;
+pub use core::assert;
+pub use core::assert_eq;
+pub use core::debug_assert_eq;
+
 #[macro_export]
 macro_rules! syscall {
     ($nr:ident)
@@ -107,91 +112,4 @@ macro_rules! cfg_if {
     (@__apply $m:meta, $($it:item)*) => {
         $(#[$m] $it)*
     };
-}
-
-macro_rules! s {
-    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
-        s!(it: $(#[$attr])* pub $t $i { $($field)* });
-    )*);
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
-    );
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            #[allow(deprecated)]
-            $(#[$attr])*
-            pub struct $i { $($field)* }
-        }
-        #[allow(deprecated)]
-        impl ::Copy for $i {}
-        #[allow(deprecated)]
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    );
-}
-
-macro_rules! s_no_extra_traits {
-    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
-        s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
-    )*);
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        cfg_if! {
-            if #[cfg(libc_union)] {
-                __item! {
-                    #[repr(C)]
-                    $(#[$attr])*
-                    pub union $i { $($field)* }
-                }
-
-                impl ::Copy for $i {}
-                impl ::Clone for $i {
-                    fn clone(&self) -> $i { *self }
-                }
-            }
-        }
-    );
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            $(#[$attr])*
-            pub struct $i { $($field)* }
-        }
-        #[allow(deprecated)]
-        impl ::Copy for $i {}
-        #[allow(deprecated)]
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    );
-}
-
-macro_rules! e {
-    ($($(#[$attr:meta])* pub enum $i:ident { $($field:tt)* })*) => ($(
-        __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            $(#[$attr])*
-            pub enum $i { $($field)* }
-        }
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    )*);
-}
-
-macro_rules! s_paren {
-    ($($(#[$attr:meta])* pub struct $i:ident ( $($field:tt)* ); )* ) => ($(
-        __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            $(#[$attr])*
-            pub struct $i ( $($field)* );
-        }
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    )*);
 }

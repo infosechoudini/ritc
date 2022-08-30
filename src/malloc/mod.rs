@@ -1,3 +1,5 @@
 pub mod mmap;
-pub mod allocator;
-pub mod blocklist;
+pub mod mmap_allocator;
+pub mod mremap;
+pub mod munmap;
+pub mod const_init;

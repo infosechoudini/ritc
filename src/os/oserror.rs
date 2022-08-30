@@ -10,6 +10,8 @@ use core::option::Option::None;
 use core::marker::Sized;
 use core::convert::From;
 use core::prelude::rust_2024;
+use core::cmp::PartialEq;
+use core::cmp::Eq;
 
 #[rust_2024::derive(Eq, PartialEq)]
 pub struct Error {
