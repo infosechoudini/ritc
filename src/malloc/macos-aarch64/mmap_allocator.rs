@@ -1,3 +1,5 @@
+
+
 use alloc::alloc::{GlobalAlloc, Layout};
 use core::cell::Cell;
 use core::ptr;
@@ -6,7 +8,6 @@ use crate::syscall0;
 use core::marker::Copy;
 use core::mem;
 use crate::malloc::mremap::mremap;
-use crate::malloc::mmap::MmapError;
 use crate::malloc::mmap;
 use core::borrow::BorrowMut;
 use core::mem::MaybeUninit;
@@ -245,12 +246,6 @@ impl MmapAllocator{
         }
     }
 
-    #[inline]
-    pub unsafe fn page_size() -> usize {
-
-        let ret = syscall0(SC_PAGE_SIZE as usize);
-        ret
-    }
 
     pub fn as_ptr(&mut self) -> *mut u8 {
 
@@ -348,4 +343,22 @@ unsafe impl Allocator for MmapAllocator{
         self.shrink_impl(ptr, old_layout, new_layout)
 
      }
+}
+
+
+
+pub const fn align_down(addr: usize, page_size: usize) -> usize {
+    addr & !(page_size - 1)
+}
+
+pub const fn align_up(addr: usize, page_size: usize) -> usize {
+    (addr + page_size - 1) & !(page_size - 1)
+}
+
+pub const fn page_offset(addr: usize, page_size: usize) -> usize {
+    addr & (page_size - 1)
+}
+
+pub const fn is_aligned(addr: usize, page_size: usize) -> bool {
+    page_offset(addr, page_size) == 0
 }

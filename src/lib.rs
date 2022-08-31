@@ -65,8 +65,15 @@ cfg_if! {
 
 
 pub use arch::*;
-pub mod os;
 pub mod error;
+
+#[cfg(all(target_os = "macos",
+          target_arch = "aarch64"))]
+#[path="arch/macos-aarch64/mod.rs"]
+pub mod arch;
+#[cfg(all(target_os = "macos",
+          target_arch = "aarch64"))]
+#[path="malloc/macos-aarch64/mod.rs"]
 pub mod malloc;
 
 #[cfg(all(target_os = "freebsd",
@@ -124,3 +131,7 @@ pub mod arch;
 target_arch = "x86_64"))]
 #[path="arch/linux-x86_64/mod.rs"]
 pub mod arch;
+#[cfg(all(target_os = "linux",
+target_arch = "x86_64"))]
+#[path="malloc/linux/mod.rs"]
+pub mod malloc;
