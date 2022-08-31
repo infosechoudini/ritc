@@ -54,7 +54,7 @@ pub const UMASK: usize = 60;
 pub const CHROOT: usize = 61;
 pub const MSYNC: usize = 65;
 pub const VFORK: usize = 66;
-pub const MUNMAP: usize = 73;
+pub const MUNMAP: usize = 0x2000049 ;
 pub const MPROTECT: usize = 74;
 pub const MADVISE: usize = 75;
 pub const MINCORE: usize = 78;
@@ -353,7 +353,7 @@ pub const PID_SHUTDOWN_SOCKETS: usize = 436;
 pub const SHARED_REGION_MAP_AND_SLIDE_NP: usize = 438;
 pub const MAXSYSCALL: usize = 439;
 
-pub const MREMAP: usize = 0xD8;
+pub const MREMAP: usize = 0x20001e9; //489
 
 pub const MAP_GROWSDOWN: usize =	0x0100;		/* stack-like segment */
 pub const MAP_DENYWRITE: usize =	0x0800;		/* ETXTBSY */

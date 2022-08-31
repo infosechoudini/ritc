@@ -143,7 +143,7 @@ pub unsafe fn syscall6(mut id: usize,
                        a2: usize,
                        a3: usize,
                        a4: usize,
-                       a5: usize,
+                       a5: isize,
                        a6: usize)
                        -> isize {
 
@@ -153,7 +153,7 @@ pub unsafe fn syscall6(mut id: usize,
         //"r"(x8), "0"(x0), "r"(x1), "r"(x2), "r"(x3), "r"(x4), "r"(x5))
         asm!(
             "svc 0",
-            in("x16") id,
+            in("x16") id ,
             inlateout("x0") a1 => ret,
             in("x1") a2,
             in("x2") a3,

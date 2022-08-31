@@ -31,6 +31,7 @@ fn allocator_twice() {
 
 }
 
+/* 
 #[test]
 fn allocator_thread() {
 
@@ -73,7 +74,7 @@ fn box_heap_find_smallest_1000() {
     }
 }
 
-
+*/
 
 pub fn test_rng() -> rand_xorshift::XorShiftRng {
     const SEED: [u8; 16] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
