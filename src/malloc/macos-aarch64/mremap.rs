@@ -5,6 +5,8 @@ use crate::arch::*;
 
 // call!(kty::__NR_mremap, addr, old_len, new_len, flags, new_addr)
 
+use crate::malloc::munmap;
+
 #[inline]
 pub unsafe fn mremap(addr: *mut u8, oldsize: usize, newsize: usize) -> *mut u8 {
 
@@ -14,6 +16,6 @@ pub unsafe fn mremap(addr: *mut u8, oldsize: usize, newsize: usize) -> *mut u8 {
         return core::ptr::null_mut();
     }
 
-    new_addr as *mut u8
+    ptr::null_mut as *mut u8
 
 }

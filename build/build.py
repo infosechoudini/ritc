@@ -78,6 +78,7 @@ def main():
         subprocess.check_call(['git', '--no-pager', 'grep', r'\<__\([A-Z]\+_\)\?NR_'], cwd=linux_path)
         sys.exit(1)
     numbers = {
+            'macos-x86_64': dict(load_headers(names, 'x86_64')),
             'macos-aarch64': dict(load_headers(names, 'arm64')),
             'linux-aarch64': dict(load_headers(names, 'arm64')),
             'linux-armeabi': dict(list(load_table('arch/arm/tools/syscall.tbl', {'common', 'eabi'})) + list(load_headers(names, 'arm', '#define __ARM_EABI__'))),

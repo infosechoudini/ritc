@@ -14,8 +14,7 @@
 #![feature(alloc_layout_extra)]
 #![feature(nonnull_slice_from_raw_parts)]
 #![feature(slice_ptr_get)]
-#![feature(default_alloc_error_handler)]
-
+#![feature(type_ascription)]
 #[cfg(not(feature = "rustc-dep-of-std"))]
 #[allow(unused_extern_crates)]
 extern crate core;
@@ -85,6 +84,11 @@ pub mod arch;
           target_arch = "x86_64"))]
 #[path="arch/macos-x86_64/mod.rs"]
 pub mod arch;
+
+#[cfg(all(target_os = "macos",
+          target_arch = "x86_64"))]
+#[path="malloc/macos-x86_64/mod.rs"]
+pub mod malloc;
 
 #[cfg(all(target_os = "linux",
           target_arch = "aarch64"))]
