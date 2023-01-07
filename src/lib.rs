@@ -14,7 +14,15 @@
 #![feature(alloc_layout_extra)]
 #![feature(nonnull_slice_from_raw_parts)]
 #![feature(slice_ptr_get)]
+<<<<<<< HEAD
 #![feature(type_ascription)]
+=======
+#![feature(default_alloc_error_handler)]
+#![feature(adt_const_params)]
+#![feature(generic_const_exprs)]
+#![feature(strict_provenance)]
+
+>>>>>>> 1b8da63 (merging old stuff)
 #[cfg(not(feature = "rustc-dep-of-std"))]
 #[allow(unused_extern_crates)]
 extern crate core;

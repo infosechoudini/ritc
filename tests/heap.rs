@@ -8,17 +8,17 @@ use core::alloc::{Layout, GlobalAlloc};
 use core::alloc::Allocator;
 extern crate alloc;
 use alloc::vec::Vec;
+use std::alloc::Global;
+use test_log::test;
 
 use ritc::malloc::mmap_allocator::MmapAllocator;
 
-#[global_allocator]
+//#[global_allocator]
 static ALLOCATOR: MmapAllocator =  MmapAllocator::INIT;
 
 /// Issue #45955 and #62251.
 #[test]
 fn alloc_system_overaligned_request() {
-    //let alloc: MmapAllocator = MmapAllocator::new();
-
     check_overalign_requests()
 }
 

@@ -4,17 +4,25 @@
 #![feature(trusted_len)]
 #![allow(unused_imports)]
 #![feature(test)]
+#![feature(write_all_vectored)]
+#![feature(const_io_structs)]
+
+
 
 extern crate test; 
 
 
 mod hash;
+mod cursor;
+mod impls;
+mod stdio;
+mod util;
 
 use ritc::malloc::mmap_allocator::MmapAllocator;
 use rand::prelude::*;
 
 #[global_allocator]
-static ALLOCATOR: MmapAllocator = MmapAllocator::new();
+static ALLOCATOR: MmapAllocator = MmapAllocator::INIT;
 
 
 /// Returns a `rand::Rng` seeded with a consistent seed.

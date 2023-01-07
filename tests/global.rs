@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 
 #[global_allocator]
-static ALLOCATOR: MmapAllocator = MmapAllocator::new();
+static ALLOCATOR: MmapAllocator = MmapAllocator::INIT;
 
 use core::alloc::{Allocator, Layout, GlobalAlloc};
 use ritc::malloc::mmap_allocator::MmapAllocator;

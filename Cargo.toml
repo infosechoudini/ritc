@@ -20,6 +20,8 @@ doctest = false
 core = { version = "1.0.0", optional = true, package = 'rustc-std-workspace-core' }
 rustc-std-workspace-alloc = { version = "1.0.0", optional = true}
 alloc = { version = "1.0.0", optional = true, package = "rustc-std-workspace-alloc" }
+log = "*"
+
 
 [features]
 default = []
@@ -29,27 +31,23 @@ rustc-dep-of-std = ["nightly", "core", "alloc"]
 
 
 [dev-dependencies]
-criterion = { version = "0.3", features = ["html_reports"] }
 libc = "0.2"
 rand = "0.7"
 rand_xorshift = "0.2"
-
+tracing-subscriber = {version = "0.3", default-features = false, features = ["env-filter", "fmt"]}
+test-log = "0.2.11"
+env_logger = "*"
 
 [[bench]]
 name = "alloc"
 path = "benches/lib.rs"
-test = false 
-
-[[bench]]
-name = "heap_bench"
-path = "benches/allocator_binary_heap.rs"
-harness = false
+test = true 
 
 [badges]
 maintenance = { status = "experimental" }
 
 [profile.dev]
-panic = "abort"
+panic = "unwind"
 lto = true
 
 [profile.release]

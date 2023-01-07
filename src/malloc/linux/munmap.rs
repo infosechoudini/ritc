@@ -7,4 +7,5 @@ use core::alloc::Layout;
 #[inline]
 pub unsafe fn munmap(addr: *mut u8, layout: Layout){
     syscall2(nr::MUNMAP, addr as usize, layout.size());
+
 }

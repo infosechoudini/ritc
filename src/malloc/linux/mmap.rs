@@ -12,9 +12,9 @@ use core::write;
 use core::assert;
 use core::assert_eq;
 use core::debug_assert_eq;
-
-use crate::syscall0;
-use crate::syscall6;
+use crate::malloc::os::oserror;
+use crate::arch::*;
+use log::{trace, info, warn};
 
 
 /// Some unix constants and an mmap function using assembly.
@@ -25,9 +25,9 @@ use crate::syscall6;
 //============================================================
 // System call code
 #[cfg(target_os = "macos")]
-const SYS_MMAP: i64 = 0x2000000 + 197;
+const SYS_MMAP: usize = 0x2000000 + 197;
 #[cfg(target_os = "linux")]
-const SYS_MMAP: i64 = 0x09;
+const SYS_MMAP: usize = 0x09;
 
 //============================================================
 // Flags for protection
@@ -41,60 +41,64 @@ const _PROT_EXEC: i32 = 0x04;
 // Flags contain sharing type and options.
 
 //Sharing types; choose one.
-const _MAP_SHARED: u64 = 0x0001; // [MF|SHM] share changes
+const _MAP_SHARED: usize = 0x0001; // [MF|SHM] share changes
 pub const MAP_PRIVATE: i32 = 0x0002; // [MF|SHM] changes are private
 
 // Other flags
-const _MAP_FIXED: u64 = 0x0010; // [MF|SHM] interpret addr exactly
-const _MAP_RENAME: u64 = 0x0020; // Sun: rename private pages to file
-const _MAP_NORESERVE: u64 = 0x0040; // Sun: don't reserve needed swap area
-const _MAP_RESERVED: u64 = 0x0080; // previously unimplemented MAP_INHERIT
-const _MAP_NOEXTEND: u64 = 0x0100; // for MAP_FILE, don't change file size
-const _MAP_HASSEMAPHORE: u64 = 0x0200; // region may contain semaphores
-const _MAP_NOCACHE: u64 = 0x0400; // don't cache pages for this mapping
-const _MAP_JIT: u64 = 0x0800; // Allocate a region that will be used for JIT purposes
-pub const MAP_STACK: u64 = 0x020000;
-pub const MAP_HUGETLB: u64 = 0x040000;
-pub const MAP_HUGE_2MB: u64 =  1_409_286_144;
+const _MAP_FIXED: usize = 0x0010; // [MF|SHM] interpret addr exactly
+const _MAP_RENAME: usize = 0x0020; // Sun: rename private pages to file
+const _MAP_NORESERVE: usize = 0x0040; // Sun: don't reserve needed swap area
+const _MAP_RESERVED: usize = 0x0080; // previously unimplemented MAP_INHERIT
+const _MAP_NOEXTEND: usize = 0x0100; // for MAP_FILE, don't change file size
+const _MAP_HASSEMAPHORE: usize = 0x0200; // region may contain semaphores
+const _MAP_NOCACHE: usize = 0x0400; // don't cache pages for this mapping
+const _MAP_JIT: usize = 0x0800; // Allocate a region that will be used for JIT purposes
+pub const MAP_STACK: usize = 0x020000;
+pub const MAP_HUGETLB: usize = 0x040000;
+pub const MAP_HUGE_2MB: usize =  1_409_286_144;
 
 pub const MAP_ANONYMOUS: i32 = 0x0020;
 pub const MAP_FAILED: i128 = 0xffffffffffffffff;
 pub const ENOMEM: i32 = 12;
 pub const MAP_POPULATE: i32 = 0x08000;
+pub const MAP_NONBLOCK: usize =       0x10000;
 // Mapping type
-const _MAP_FILE: u64 = 0x0000; // map from file (default)
+const _MAP_FILE: usize = 0x0000; // map from file (default)
 #[cfg(target_os = "macos")]
-pub const MAP_ANON: u64 = 0x1000; // allocated from memory, swap space
+pub const MAP_ANON: usize = 0x1000; // allocated from memory, swap space
 #[cfg(target_os = "linux")]
 pub const MAP_ANON: i32 = 0x20;
 pub const PROT_EXEC: i32 = 4;
 
 const _MAP_ANONYMOUS: i32 = MAP_ANON;
-pub const FLAG_COMMON: u64 = MAP_ANON as u64 | MAP_PRIVATE as u64 | MAP_POPULATE as u64 ;
-pub const PROTECT_COMMON: u64 = PROT_WRITE  as u64 | PROT_READ as u64 ;
+pub const FLAG_COMMON: usize = MAP_ANON as usize | MAP_PRIVATE as usize | MAP_POPULATE as usize   ;
+pub const PROTECT_COMMON: usize = PROT_WRITE  as usize | PROT_READ as usize ;
+pub const MADV_SEQUENTIAL: usize = 2;
+pub const MADV_WILLNEED: usize = 3;
+pub const MADV_RANDOM: usize = 1;
 
-
-
-#[rust_2024::derive(Debug)]
-pub struct MmapError {
-    code: i64,
-}
-
-#[cfg(all(not(feature = "use_libc"), target_os = "linux"))]
 #[inline]
 pub unsafe fn mmap(
     addr: *mut u8,
     len: usize,
 ) -> *mut u8 {
 
-    let out_addr = syscall6(SYS_MMAP as usize, addr as usize, len as usize, PROTECT_COMMON as usize, FLAG_COMMON as usize, usize::MAX, 0 as usize);
+    let out_addr = syscall6(SYS_MMAP, addr as usize, len, PROTECT_COMMON, FLAG_COMMON, -1, 0);
 
-    if out_addr == usize::MAX || out_addr == usize::MIN {
-        //let err =  MmapError { code: (-out_addr) };
-        return core::ptr::null_mut()
+
+    let out_check = oserror::Error::demux(out_addr);
+
+
+    match out_check.is_ok() {
+        true => {
+            return out_addr as *mut u8
+        }
+        false => {
+            return core::ptr::null_mut();
+        }
+
     }
 
-    out_addr as *mut u8
 }
 
 pub const SC_PAGE_SIZE: i32 = 30; // 30i32
@@ -106,48 +110,3 @@ pub unsafe fn page_size() -> usize {
     ret
 }
 
-
-#[cfg(all(not(feature = "use_libc"), target_os = "macos"))]
-pub unsafe fn mmap(
-    addr: *mut u8,
-    len: usize,
-    prot: u64,
-    flags: u64,
-    fd: u64,
-    offset: i64,
-) -> Result<*mut u8, MmapError> {
-    let addr = addr as i64;
-    let out_addr: i64;
-    let err: i64;
-
-    asm!(
-        r"
-        // Make a syscall, using the parameters in the registers
-        syscall
-        // osx sets the carry bit if there's an error. If that happens, we jump
-        // to label 1
-        jc 1f
-        // Set edx to 0 to indicate no error
-        mov edx, 0
-        // Jump to label 2 to finish this
-        jmp 2f
-1:
-        // There was an error. Set edx to 1 to indicate that.
-        mov edx, 1
-2:
-    ",
-    inout("eax") SYS_MMAP => out_addr,
-    in("edi") addr,
-    in("esi") len,
-    inout("edx") prot => err,
-    in("r10d") flags,
-    in("r8d") fd,
-    in("r9d") offset,
-    );
-
-    if err != 0 {
-        return Err(MmapError { code: out_addr });
-    }
-
-    Ok(out_addr as *mut u8)
-}
