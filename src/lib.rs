@@ -16,13 +16,7 @@
 #![feature(slice_ptr_get)]
 <<<<<<< HEAD
 #![feature(type_ascription)]
-=======
-#![feature(default_alloc_error_handler)]
-#![feature(adt_const_params)]
-#![feature(generic_const_exprs)]
-#![feature(strict_provenance)]
-
->>>>>>> 1b8da63 (merging old stuff)
+#![feature(ptr_metadata)]
 #[cfg(not(feature = "rustc-dep-of-std"))]
 #[allow(unused_extern_crates)]
 extern crate core;
@@ -33,6 +27,9 @@ extern crate alloc;
 
 #[cfg(test)]
 extern crate std;
+
+#[macro_use]
+extern crate log;
 
 pub mod macros;
 

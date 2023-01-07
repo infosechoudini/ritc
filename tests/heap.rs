@@ -1,5 +1,4 @@
 #![allow(unused_imports)]
-#![feature(default_alloc_error_handler)]
 #![feature(allocator_api)]
 #![feature(slice_ptr_get)]
 

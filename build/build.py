@@ -73,26 +73,25 @@ def main():
     names = set(x.groups() for x in RE_SYSCALL_NR.finditer(
         subprocess.check_output(['git', '--no-pager', 'grep', r'\<__\([A-Z]\+_\)\?NR_'], cwd=linux_path)
             .decode('utf-8')))
-    if len(names) < 380:
+    if len(names) < 300:
         print("didn't find anywhere near enough syscalls; hack must have failed")
         subprocess.check_call(['git', '--no-pager', 'grep', r'\<__\([A-Z]\+_\)\?NR_'], cwd=linux_path)
         sys.exit(1)
     numbers = {
-            'macos-x86_64': dict(load_headers(names, 'x86_64')),
-            'macos-aarch64': dict(load_headers(names, 'arm64')),
-            'linux-aarch64': dict(load_headers(names, 'arm64')),
-            'linux-armeabi': dict(list(load_table('arch/arm/tools/syscall.tbl', {'common', 'eabi'})) + list(load_headers(names, 'arm', '#define __ARM_EABI__'))),
-            'linux-mips': dict(load_headers(names, 'mips',
-                '#define _MIPS_SIM _MIPS_SIM_ABI32')),
-            'linux-mips64': dict(load_headers(names, 'mips',
-                '#define _MIPS_SIM _MIPS_SIM_ABI64')),
-            'linux-powerpc': dict(load_headers(names, 'powerpc',
-                '#undef __arch64__')),
-            'linux-powerpc64': dict(load_headers(names, 'powerpc',
-                '#define __arch64__ 1\n#define __powerpc64__')),
-            'linux-sparc64': dict(load_headers(names, 'sparc')),
-            'linux-x86': dict(load_table('arch/x86/entry/syscalls/syscall_32.tbl', {'i386'})),
-            'linux-x86_64': dict(load_table('arch/x86/entry/syscalls/syscall_64.tbl', {'common', '64'})),
+            #'macos-aarch64': dict(load_headers(names, 'arm64')),
+            #'linux-aarch64': dict(load_headers(names, 'arm64')),
+            #'linux-armeabi': dict(list(load_table('arch/arm/tools/syscall.tbl', {'common', 'eabi'})) + list(load_headers(names, 'arm', '#define __ARM_EABI__'))),
+            #'linux-mips': dict(load_headers(names, 'mips',
+            #    '#define _MIPS_SIM _MIPS_SIM_ABI32')),
+            #'linux-mips64': dict(load_headers(names, 'mips',
+            #    '#define _MIPS_SIM _MIPS_SIM_ABI64')),
+            #'linux-powerpc': dict(load_headers(names, 'powerpc',
+            #    '#undef __arch64__')),
+            #'linux-powerpc64': dict(load_headers(names, 'powerpc',
+            #    '#define __arch64__ 1\n#define __powerpc64__')),
+            #'linux-sparc64': dict(load_headers(names, 'sparc')),
+            #'linux-x86': dict(load_table('arch/x86/entry/syscalls/syscall_32.tbl', {'i386'})),
+            'linux-x86_64': dict(load_table('syscall_64.tbl', {'common', '64'})),
             }
 
     for arch, nums in numbers.items():

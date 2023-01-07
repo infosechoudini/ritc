@@ -247,15 +247,6 @@ impl MmapAllocator{
     }
 
 
-    pub fn as_ptr(&mut self) -> *mut u8 {
-
-        let mut return_self = self;
-        
-
-        &*return_self as *const MmapAllocator as *mut u8
-
-    }
-
 }
 
 

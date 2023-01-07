@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/syscall.h>
-#include <sys/appleapiopts.h>
 
 pub const RESTART_SYSCALL        : usize = __NR_restart_syscall;
 pub const EXIT                   : usize = __NR_exit;

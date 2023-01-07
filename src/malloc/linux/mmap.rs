@@ -71,11 +71,15 @@ pub const MAP_ANON: i32 = 0x20;
 pub const PROT_EXEC: i32 = 4;
 
 const _MAP_ANONYMOUS: i32 = MAP_ANON;
-pub const FLAG_COMMON: usize = MAP_ANON as usize | MAP_PRIVATE as usize | MAP_POPULATE as usize   ;
-pub const PROTECT_COMMON: usize = PROT_WRITE  as usize | PROT_READ as usize ;
-pub const MADV_SEQUENTIAL: usize = 2;
-pub const MADV_WILLNEED: usize = 3;
-pub const MADV_RANDOM: usize = 1;
+pub const FLAG_COMMON: u64 = MAP_ANON as u64 | MAP_PRIVATE as u64 ;
+pub const PROTECT_COMMON: u64 = PROT_WRITE  as u64 | PROT_READ as u64 ;
+
+
+
+#[rust_2024::derive(Debug)]
+pub struct MmapError {
+    code: i64,
+}
 
 #[inline]
 pub unsafe fn mmap(
@@ -83,20 +87,14 @@ pub unsafe fn mmap(
     len: usize,
 ) -> *mut u8 {
 
-    let out_addr = syscall6(SYS_MMAP, addr as usize, len, PROTECT_COMMON, FLAG_COMMON, -1, 0);
+    let out_addr = syscall6(SYS_MMAP as usize, addr as usize, len as usize, PROTECT_COMMON as usize, FLAG_COMMON as usize, 0 as usize, 0 as usize);
 
-
-    let out_check = oserror::Error::demux(out_addr);
-
-
-    match out_check.is_ok() {
-        true => {
-            return out_addr as *mut u8
-        }
-        false => {
-            return core::ptr::null_mut();
-        }
-
+    let out_check = out_addr as i64;
+    
+    if out_check < 0 {
+        //let err =  MmapError { code: (-out_addr) };
+        debug!("MMAP ERROR: {:#?}", MmapError { code: (-(out_check)) });
+        return core::ptr::null_mut()
     }
 
 }
